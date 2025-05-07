@@ -5,7 +5,7 @@
 CREATE TABLE candles (
     id SERIAL,                             -- Unique identifier for each candle (not primary because of time-series nature)
     symbol TEXT NOT NULL,                  -- Trading pair symbol (e.g., BTCUSDT)
-    interval TEXT NOT NULL,                -- Time interval for the candle (e.g., 1m, 5m, 1h)
+    timerange TEXT NOT NULL,               -- Timerange for the candle (e.g., 1m, 5m, 1h)
     open_time TIMESTAMPTZ NOT NULL,        -- Start time of the candle
     close_time TIMESTAMPTZ NOT NULL,       -- End time of the candle  
     open DOUBLE PRECISION NOT NULL,        -- Opening price of the candle
@@ -14,11 +14,11 @@ CREATE TABLE candles (
     low DOUBLE PRECISION NOT NULL,         -- Lowest price during the candle
     volume DOUBLE PRECISION NOT NULL,      -- Trading volume during the candle
     usdt_volume DOUBLE PRECISION NOT NULL, -- Volume in USDT
-    UNIQUE(symbol, interval, open_time)    -- Ensure unique entries for each symbol, interval, and open time
+    UNIQUE(symbol, timerange, open_time)   -- Ensure unique entries for each symbol, timerange, and open time
 );
 
 -- Create a hypertable for time-series data
 SELECT create_hypertable('candles', 'open_time');
 
 -- Create indexes to optimize queries
-CREATE INDEX ON candles (symbol, interval, open_time DESC);
+CREATE INDEX ON candles (symbol, timerange, open_time DESC);
